@@ -1,0 +1,1895 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>misi ultah nih</title>
+
+<style>
+/* =========================================================
+   reset & global
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+    background: #050509;
+    color: #fff;
+    font-family: arial, helvetica, sans-serif;
+}
+
+button,
+input {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.screen {
+    min-height: 100vh;
+    width: 100%;
+}
+
+@keyframes screenshake {
+    0%, 100% { transform: translate(0, 0); }
+    20% { transform: translate(-6px, 4px); }
+    40% { transform: translate(6px, -4px); }
+    60% { transform: translate(-4px, -3px); }
+    80% { transform: translate(4px, 3px); }
+}
+
+.shake-now {
+    animation: screenshake 0.35s ease;
+}
+
+/* =========================================================
+   intro
+========================================================= */
+
+#intro {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background:
+        radial-gradient(circle at center, #17172d 0%, #07070d 45%, #020205 100%);
+}
+
+.intro-content {
+    width: min(90%, 600px);
+    text-align: center;
+}
+
+.system-text {
+    color: #777;
+    font-size: 11px;
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+}
+
+.intro-title {
+    font-size: clamp(42px, 11vw, 90px);
+    letter-spacing: 10px;
+    font-weight: 900;
+    line-height: 0.9;
+
+    background: linear-gradient(
+        90deg,
+        #fff,
+        #aaa,
+        #fff
+    );
+
+    background-size: 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    animation: shine 4s linear infinite;
+}
+
+@keyframes shine {
+    from {
+        background-position: 0%;
+    }
+
+    to {
+        background-position: 200%;
+    }
+}
+
+.intro-subtitle {
+    margin-top: 20px;
+    color: #888;
+    font-size: 13px;
+    letter-spacing: 3px;
+}
+
+.loading-box {
+    width: 100%;
+    height: 3px;
+    background: #1b1b22;
+    margin-top: 45px;
+    overflow: hidden;
+}
+
+.loading-bar {
+    width: 0%;
+    height: 100%;
+    background: #fff;
+    transition: width 0.2s;
+}
+
+.loading-percent {
+    margin-top: 12px;
+    font-size: 11px;
+    color: #666;
+    letter-spacing: 2px;
+}
+
+.loading-joke {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #999;
+    font-style: italic;
+}
+
+/* =========================================================
+   game & header
+========================================================= */
+
+#game {
+    display: none;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 50% 0%, #161625, transparent 40%),
+        #050509;
+}
+
+.game-container {
+    width: min(1100px, 94%);
+    margin: auto;
+    padding: 25px 0 60px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+
+    padding: 15px 0;
+    border-bottom: 1px solid #222;
+}
+
+.logo {
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: #aaa;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.panic-btn {
+    padding: 6px 12px;
+    border: 1px solid #333;
+    background: #101018;
+    color: #bbb;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    transition: 0.2s;
+}
+
+.panic-btn:hover {
+    border-color: #fff;
+    color: #fff;
+}
+
+.inventory {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.inventory-title {
+    font-size: 9px;
+    color: #555;
+    letter-spacing: 2px;
+}
+
+.inventory-items {
+    display: flex;
+    gap: 5px;
+}
+
+.item {
+    width: 25px;
+    height: 25px;
+
+    border: 1px solid #292933;
+    background: #101016;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 11px;
+    color: #555;
+
+    transition: 0.3s;
+}
+
+.item.active {
+    color: #fff;
+    border-color: #777;
+    box-shadow: 0 0 15px rgba(255,255,255,0.12);
+}
+
+/* =========================================================
+   level & button
+========================================================= */
+
+.level {
+    display: none;
+    padding-top: 45px;
+    animation: fadein 0.7s ease;
+}
+
+.level.active {
+    display: block;
+}
+
+@keyframes fadein {
+    from {
+        opacity: 0;
+        transform: translatey(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translatey(0);
+    }
+}
+
+.level-number {
+    color: #555;
+    font-size: 10px;
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+}
+
+.level-title {
+    font-size: clamp(30px, 7vw, 60px);
+    letter-spacing: 5px;
+    font-weight: 800;
+}
+
+.level-description {
+    color: #777;
+    margin-top: 12px;
+    max-width: 600px;
+    line-height: 1.7;
+    font-size: 13px;
+}
+
+.main-btn {
+    margin-top: 30px;
+
+    padding: 14px 25px;
+
+    border: 1px solid #555;
+    background: transparent;
+    color: #fff;
+
+    letter-spacing: 2px;
+    font-size: 11px;
+
+    transition: 0.3s;
+}
+
+.main-btn:hover {
+    background: #fff;
+    color: #000;
+}
+
+/* =========================================================
+   level 1 - room
+========================================================= */
+
+.room {
+    position: relative;
+
+    width: 100%;
+    height: min(520px, 70vh);
+
+    margin-top: 40px;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,0.015) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            rgba(255,255,255,0.015) 1px,
+            transparent 1px
+        );
+
+    background-size: 40px 40px;
+
+    border: 1px solid #1f1f28;
+    overflow: hidden;
+}
+
+.room-floor {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 25%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0b0b10 25%,
+            #0e0e15 25%,
+            #0e0e15 50%,
+            #0b0b10 50%,
+            #0b0b10 75%,
+            #0e0e15 75%
+        );
+
+    background-size: 50px 50px;
+
+    border-top: 1px solid #222;
+}
+
+.object {
+    position: absolute;
+    user-select: none;
+    transition: 0.3s;
+}
+
+.object:hover {
+    filter: brightness(1.5);
+    transform: scale(1.05);
+}
+
+.window {
+    left: 8%;
+    top: 12%;
+
+    width: 150px;
+    height: 170px;
+
+    border: 5px solid #292933;
+
+    background:
+        radial-gradient(circle at 70% 30%, #fff 0 2px, transparent 3px),
+        radial-gradient(circle at 20% 65%, #777 0 2px, transparent 3px),
+        linear-gradient(#10101d, #090914);
+
+    box-shadow:
+        inset 0 0 40px #000,
+        0 0 30px rgba(255,255,255,0.03);
+}
+
+.window::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: #292933;
+}
+
+.window::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #292933;
+}
+
+.clock {
+    right: 10%;
+    top: 10%;
+
+    width: 90px;
+    height: 90px;
+
+    border-radius: 50%;
+    border: 4px solid #30303a;
+
+    background: #08080d;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    box-shadow: 0 0 25px rgba(255,255,255,0.04);
+}
+
+.clock::before {
+    content: "";
+    position: absolute;
+
+    width: 2px;
+    height: 27px;
+
+    background: #aaa;
+
+    transform: rotate(40deg);
+    transform-origin: bottom;
+}
+
+.clock::after {
+    content: "";
+    position: absolute;
+
+    width: 2px;
+    height: 18px;
+
+    background: #fff;
+
+    transform: rotate(120deg);
+    transform-origin: bottom;
+}
+
+.book {
+    left: 37%;
+    bottom: 23%;
+
+    width: 115px;
+    height: 75px;
+
+    background: #171720;
+
+    border: 1px solid #393944;
+
+    transform: rotate(-8deg);
+
+    box-shadow: 10px 10px 0 #08080c;
+}
+
+.book::before {
+    content: "jangan dibuka";
+
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: #777;
+    text-align: center;
+    padding: 4px;
+}
+
+.plant {
+    right: 25%;
+    bottom: 23%;
+
+    width: 70px;
+    height: 130px;
+}
+
+.pot {
+    position: absolute;
+    bottom: 0;
+    left: 17px;
+
+    width: 40px;
+    height: 45px;
+
+    background: #22222b;
+
+    clip-path: polygon(
+        10% 0,
+        90% 0,
+        75% 100%,
+        25% 100%
+    );
+}
+
+.leaf {
+    position: absolute;
+
+    width: 30px;
+    height: 55px;
+
+    background: #1f2930;
+
+    border-radius: 100% 0 100% 0;
+
+    transform-origin: bottom;
+}
+
+.leaf:nth-child(1) {
+    left: 20px;
+    top: 20px;
+    transform: rotate(-35deg);
+}
+
+.leaf:nth-child(2) {
+    left: 35px;
+    top: 10px;
+    transform: rotate(35deg);
+}
+
+.leaf:nth-child(3) {
+    left: 10px;
+    top: 40px;
+    transform: rotate(-65deg);
+}
+
+.cat-toy {
+    left: 52%;
+    top: 20%;
+    padding: 8px 12px;
+    border: 1px dashed #3a3a4a;
+    background: #0d0d14;
+    font-size: 18px;
+    border-radius: 10px;
+}
+
+.roach-toy {
+    left: 16%;
+    bottom: 23%;
+    padding: 6px 10px;
+    border: 1px dashed #3a3a4a;
+    background: #0d0d14;
+    font-size: 16px;
+    border-radius: 10px;
+    transition: left 0.15s ease, bottom 0.15s ease;
+}
+
+.object-message {
+    position: absolute;
+
+    left: 50%;
+    bottom: 8%;
+
+    transform: translatex(-50%);
+
+    color: #555;
+
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-align: center;
+    width: 90%;
+}
+
+/* =========================================================
+   modal, memory, riddle, password, final, cert & secret
+========================================================= */
+
+.modal {
+    position: fixed;
+    inset: 0;
+
+    z-index: 500;
+
+    background: rgba(0,0,0,0.75);
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-box {
+    width: min(430px, 100%);
+
+    background: #0b0b11;
+
+    border: 1px solid #333;
+
+    padding: 30px;
+
+    text-align: center;
+
+    animation: modalin 0.3s ease;
+}
+
+@keyframes modalin {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-icon {
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+.modal-text {
+    color: #aaa;
+    line-height: 1.8;
+    font-size: 13px;
+}
+
+.close-btn {
+    margin-top: 25px;
+
+    padding: 10px 20px;
+
+    border: 1px solid #444;
+    background: transparent;
+    color: #fff;
+
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+.memory-grid {
+    width: min(500px, 100%);
+
+    margin: 40px auto 0;
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 10px;
+}
+
+.card {
+    aspect-ratio: 1;
+
+    background: #0c0c12;
+
+    border: 1px solid #292932;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 25px;
+
+    transition: 0.3s;
+
+    transform-style: preserve-3d;
+}
+
+.card:hover {
+    border-color: #666;
+}
+
+.card.flipped,
+.card.matched {
+    background: #181820;
+    border-color: #777;
+}
+
+.memory-status {
+    text-align: center;
+    margin-top: 20px;
+
+    color: #666;
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+.memory-roast {
+    text-align: center;
+    margin-top: 10px;
+    color: #aaa;
+    font-size: 12px;
+    min-height: 18px;
+}
+
+.riddle-box {
+    max-width: 650px;
+
+    margin: 45px auto 0;
+
+    padding: 35px;
+
+    background: #0a0a10;
+
+    border: 1px solid #25252f;
+
+    text-align: center;
+}
+
+.riddle-number {
+    color: #444;
+    font-size: 10px;
+    letter-spacing: 3px;
+}
+
+.riddle-question {
+    margin-top: 25px;
+
+    font-size: 20px;
+    line-height: 1.7;
+
+    color: #ddd;
+}
+
+.answer-box {
+    display: flex;
+    gap: 8px;
+
+    margin-top: 30px;
+}
+
+.answer-input {
+    flex: 1;
+
+    padding: 14px;
+
+    border: 1px solid #333;
+
+    background: #050508;
+    color: #fff;
+
+    outline: none;
+}
+
+.answer-input:focus {
+    border-color: #777;
+}
+
+.door {
+    max-width: 600px;
+
+    margin: 50px auto 0;
+
+    text-align: center;
+
+    padding: 50px 25px 65px;
+
+    border: 1px solid #25252d;
+
+    background:
+        radial-gradient(circle at center, #15151e, #07070b);
+
+    position: relative;
+}
+
+.lock {
+    font-size: 50px;
+    margin-bottom: 20px;
+}
+
+.password-input {
+    width: min(350px, 100%);
+
+    padding: 15px;
+
+    margin-top: 22px;
+
+    background: #050508;
+
+    border: 1px solid #333;
+
+    color: #fff;
+
+    text-align: center;
+
+    letter-spacing: 5px;
+
+    outline: none;
+}
+
+.door-actions {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    position: relative;
+    min-height: 55px;
+}
+
+.skip-prank-btn {
+    padding: 14px 18px;
+    border: 1px dashed #444;
+    background: #101018;
+    color: #888;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    transition: transform 0.12s ease;
+}
+
+#final {
+    position: fixed;
+    inset: 0;
+
+    z-index: 900;
+
+    display: none;
+
+    justify-content: center;
+    align-items: flex-start;
+
+    text-align: center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #1c1c31,
+            #07070d 55%,
+            #010103
+        );
+
+    overflow-y: auto;
+    padding: 40px 15px 60px;
+}
+
+.final-content {
+    width: min(92%, 700px);
+
+    position: relative;
+    z-index: 2;
+
+    animation: finalin 1.2s ease;
+}
+
+@keyframes finalin {
+    from {
+        opacity: 0;
+        transform: translatey(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translatey(0);
+    }
+}
+
+.final-small {
+    color: #777;
+
+    font-size: 11px;
+    letter-spacing: 5px;
+}
+
+.final-title {
+    margin-top: 16px;
+
+    font-size: clamp(42px, 11vw, 90px);
+
+    line-height: 0.95;
+
+    letter-spacing: 6px;
+}
+
+.cake-interactive {
+    margin: 22px auto 0;
+    padding: 18px;
+    max-width: 460px;
+    border: 1px solid #2a2a38;
+    background: rgba(12, 12, 20, 0.85);
+}
+
+.cake-emoji {
+    font-size: 46px;
+    display: inline-block;
+    transition: transform 0.12s ease;
+}
+
+.blow-bar-wrap {
+    width: 100%;
+    height: 8px;
+    background: #1c1c28;
+    margin: 12px 0 8px;
+    overflow: hidden;
+}
+
+.blow-bar-fill {
+    width: 0%;
+    height: 100%;
+    background: #fff;
+    transition: width 0.15s ease;
+}
+
+.blow-btn {
+    margin-top: 10px;
+    padding: 10px 18px;
+    border: 1px solid #666;
+    background: transparent;
+    color: #fff;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+.blow-btn:hover {
+    background: #fff;
+    color: #000;
+}
+
+.gift-pick-box {
+    margin: 20px auto 0;
+    padding: 18px;
+    max-width: 460px;
+    border: 1px dashed #353548;
+    background: rgba(12, 12, 20, 0.75);
+}
+
+.gift-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.gift-item {
+    padding: 12px 18px;
+    border: 1px solid #444;
+    background: #11111a;
+    color: #fff;
+    font-size: 20px;
+    transition: 0.2s;
+}
+
+.gift-item:hover {
+    transform: translatey(-4px);
+    border-color: #fff;
+}
+
+.gift-result-text {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #ccc;
+    line-height: 1.6;
+}
+
+.final-message {
+    margin: 24px auto 0;
+
+    max-width: 550px;
+
+    color: #999;
+
+    line-height: 1.9;
+
+    font-size: 14px;
+}
+
+.secret-button {
+    margin-top: 28px;
+
+    padding: 12px 25px;
+
+    border: 1px solid #444;
+
+    background: transparent;
+
+    color: #777;
+
+    font-size: 10px;
+
+    letter-spacing: 2px;
+}
+
+.secret-button:hover {
+    border-color: #fff;
+    color: #fff;
+}
+
+#certScreen {
+    position: fixed;
+    inset: 0;
+
+    z-index: 940;
+
+    display: none;
+
+    justify-content: center;
+    align-items: center;
+
+    background: #06060b;
+
+    text-align: center;
+    padding: 35px 20px;
+    overflow-y: auto;
+}
+
+.cert-wrap {
+    width: min(92%, 560px);
+}
+
+.cert-box {
+    margin-top: 24px;
+    padding: 22px;
+    border: 1px dashed #3a3a4a;
+    background: #0b0b12;
+    text-align: left;
+    font-size: 13px;
+    line-height: 1.9;
+    color: #bbb;
+}
+
+#secretEnding {
+    position: fixed;
+    inset: 0;
+
+    z-index: 960;
+
+    display: none;
+
+    justify-content: center;
+    align-items: flex-start;
+
+    background: #000;
+
+    text-align: center;
+    padding: 40px 20px 60px;
+    overflow-y: auto;
+}
+
+.secret-content {
+    width: min(92%, 600px);
+    margin: auto;
+}
+
+.secret-label {
+    color: #555;
+    letter-spacing: 5px;
+    font-size: 10px;
+}
+
+.secret-title {
+    margin-top: 20px;
+
+    font-size: clamp(35px, 9vw, 70px);
+
+    letter-spacing: 5px;
+}
+
+.secret-text {
+    margin-top: 25px;
+
+    color: #888;
+
+    line-height: 2;
+}
+
+.particle {
+    position: fixed;
+
+    width: 3px;
+    height: 3px;
+
+    background: #fff;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    z-index: 1;
+
+    animation: floatparticle linear forwards;
+}
+
+@keyframes floatparticle {
+    from {
+        transform: translatey(0);
+        opacity: 0;
+    }
+
+    15% {
+        opacity: 0.7;
+    }
+
+    100% {
+        transform: translatey(-100vh);
+        opacity: 0;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .room {
+        height: 500px;
+    }
+
+    .window {
+        width: 110px;
+        height: 130px;
+    }
+
+    .clock {
+        width: 65px;
+        height: 65px;
+    }
+
+    .book {
+        left: 20%;
+    }
+
+    .plant {
+        right: 15%;
+    }
+
+    .memory-grid {
+        gap: 6px;
+    }
+
+    .riddle-box {
+        padding: 25px 15px;
+    }
+
+    .answer-box {
+        flex-direction: column;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- intro -->
+<section id="intro">
+    <div class="intro-content">
+        <div class="system-text">bentar yaaaa, lagi loading nih...</div>
+        <div class="intro-title">hbd kakkkk</div>
+        <div class="intro-subtitle">ada side quest kecil-kecilan buat kamu yang lagi ultah</div>
+
+        <div class="loading-box">
+            <div id="loadingBar" class="loading-bar"></div>
+        </div>
+        <div id="loadingPercent" class="loading-percent">0%</div>
+        <div id="loadingJoke" class="loading-joke">lagi ngitungin umur kamu yang nambah...</div>
+    </div>
+</section>
+
+<!-- game -->
+<main id="game">
+    <div class="game-container">
+
+        <!-- header -->
+        <header class="header">
+            <div class="logo">ultah // side quest</div>
+            <div class="header-right">
+                <button class="panic-btn" onclick="ramalNasib()">ramal nasib 🔮</button>
+                <button class="panic-btn" onclick="panicJoke()">tombol darurat 🚨</button>
+                <div class="inventory">
+                    <div class="inventory-title">tas kamu</div>
+                    <div class="inventory-items">
+                        <div id="item1" class="item">?</div>
+                        <div id="item2" class="item">?</div>
+                        <div id="item3" class="item">?</div>
+                        <div id="item4" class="item">?</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- level 1 -->
+        <section id="level1" class="level active">
+            <div class="level-number">stage 01</div>
+            <h1 class="level-title">kamar misterius</h1>
+            <p class="level-description">
+                eh ada sesuatu yang ngumpet di kamar ini nih.
+                coba liat barang-barang yang agak sus di sini,
+                kali aja nyimpen clue penting (atau malah zonk wkwk).
+            </p>
+
+            <div class="room">
+                <div class="room-floor"></div>
+
+                <div id="window" class="object window" onclick="inspectObject('window')"></div>
+                <div id="clock" class="object clock" onclick="inspectObject('clock')"></div>
+                <div id="book" class="object book" onclick="inspectObject('book')"></div>
+                <div id="plant" class="object plant" onclick="inspectObject('plant')">
+                    <div class="leaf"></div>
+                    <div class="leaf"></div>
+                    <div class="leaf"></div>
+                    <div class="pot"></div>
+                </div>
+
+                <div id="catToy" class="object cat-toy" onclick="inspectZonk()">🐈‍⬛</div>
+                <div id="roachToy" class="object roach-toy" onclick="inspectRoach()">🪳</div>
+
+                <div class="object-message">
+                    klik barangnya buat liat (hati-hati ada makhluk numpang lewat)
+                </div>
+            </div>
+        </section>
+
+        <!-- level 2 -->
+        <section id="level2" class="level">
+            <div class="level-number">stage 02</div>
+            <h1 class="level-title">tes ingatan</h1>
+            <p class="level-description">
+                pasangin semua simbol yang kembar.
+                jangan sampe pikun ya mentang-mentang umur nambah setahun!
+            </p>
+
+            <div id="memoryGrid" class="memory-grid"></div>
+            <div id="memoryStatus" class="memory-status">0 / 4 kelar</div>
+            <div id="memoryRoast" class="memory-roast"></div>
+        </section>
+
+        <!-- level 3 -->
+        <section id="level3" class="level">
+            <div class="level-number">stage 03</div>
+            <h1 class="level-title">tebak-tebakan</h1>
+            <p class="level-description">
+                satu pertanyaan dulu sebelum kamu lanjut ke boss terakhir.
+                gampang banget kok, kalo salah kebangetan sih wkwk.
+            </p>
+
+            <div class="riddle-box">
+                <div class="riddle-number">pertanyaan random</div>
+                <div class="riddle-question">
+                    aku cuma dateng setahun sekali,
+                    tapi tiap dateng pasti bikin kamu ngerasa jadi main character
+                    (dan otomatis nambah tua setahun).
+                    apakah aku?
+                </div>
+
+                <div class="answer-box">
+                    <input
+                        id="riddleAnswer"
+                        class="answer-input"
+                        type="text"
+                        placeholder="ketik jawaban kamu di sini..."
+                        autocomplete="off"
+                    >
+                    <button class="main-btn" style="margin-top: 0;" onclick="checkRiddle()">
+                        gas cek
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- level 4 -->
+        <section id="level4" class="level">
+            <div class="level-number">final stage</div>
+            <h1 class="level-title">pintu terakhir</h1>
+            <p class="level-description">
+                dikit lagi nyampe nih!
+                tapi pintunya masih kegembok, masukin passwordnya dulu dong.
+                (clue: liat jam dinding di stage 1 tadi!)
+            </p>
+
+            <div class="door">
+                <div class="lock">◈</div>
+                <p>masukin passwordnya kakk</p>
+
+                <input
+                    id="passwordInput"
+                    class="password-input"
+                    type="text"
+                    placeholder="password"
+                    autocomplete="off"
+                >
+
+                <div class="door-actions">
+                    <button class="main-btn" style="margin-top: 0;" onclick="checkPassword()">
+                        buka gembok
+                    </button>
+                    <button
+                        id="skipPrankBtn"
+                        class="skip-prank-btn"
+                        onmouseenter="runAwaySkip()"
+                        onclick="runAwaySkip()">
+                        skip aja malas mikir 🏃‍♂️
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<!-- modal -->
+<div id="modal" class="modal">
+    <div class="modal-box">
+        <div id="modalIcon" class="modal-icon">?</div>
+        <div id="modalText" class="modal-text"></div>
+        <button class="close-btn" onclick="closeModal()">oke sip</button>
+    </div>
+</div>
+
+<!-- final screen -->
+<section id="final">
+    <div class="final-content">
+        <div class="final-small">misi kelar!!</div>
+        <h1 class="final-title">happy<br>birthday!</h1>
+
+        <div class="cake-interactive">
+            <div class="cake-emoji" id="cakeEmoji">🎂</div>
+            <div style="font-size: 11px; color: #aaa; margin-top: 6px;" id="blowHint">
+                lilinnya masih nyala tuh! klik tombol di bawah berkali-kali buat niup!
+            </div>
+            <div class="blow-bar-wrap">
+                <div class="blow-bar-fill" id="blowBarFill"></div>
+            </div>
+            <button class="blow-btn" id="blowCandleBtn" onclick="blowCandle()">
+                fuuuh! tiup lilin 💨
+            </button>
+        </div>
+
+        <div class="gift-pick-box">
+            <div style="font-size: 11px; letter-spacing: 2px; color: #aaa;">
+                pilih 1 kado virtual kamu:
+            </div>
+            <div class="gift-row">
+                <button class="gift-item" onclick="pickGift(1)">🎁</button>
+                <button class="gift-item" onclick="pickGift(2)">🎀</button>
+                <button class="gift-item" onclick="pickGift(3)">📦</button>
+            </div>
+            <div class="gift-result-text" id="giftResultText">
+                klik salah satu kotak di atas buat unboxing!
+            </div>
+        </div>
+
+        <p class="final-message">
+            selamat ulang tahun ya!! 🎉
+            <br><br>
+            semoga di umur yang baru ini makin banyak hal-hal random yang buat kamu happy
+            dan rezeki yang terus menerus dateng ke hidup kamu.
+            <br><br>
+            kalo lagi capek atau ngerasa hidup lagi agak chaos,
+            jangan lupa istirahat bentar, tarik napas, terus gas lagi pelan-pelan.
+            you got this!
+            <br><br>
+            hari ini full spotlight buat kamu. enjoy your day!
+        </p>
+
+        <button class="secret-button" onclick="showCertScreen()">
+            eiii, masih ada lagi nih...
+        </button>
+    </div>
+</section>
+
+<!-- frame khusus sertifikat (terpisah dari bagian paling akhir) -->
+<section id="certScreen">
+    <div class="cert-wrap">
+        <div class="secret-label">bonus frame</div>
+        <h1 class="secret-title">sertifikat resmi</h1>
+
+        <div class="cert-box">
+            <strong style="color:#fff;">🧾 sertifikat resmi nambah umur:</strong><br>
+            • status: <strong>resmi naik 1 level (makin dewasa katanya)</strong><br>
+            • efek samping: <strong>mulai sering bilang "punggungku pegel" &amp; pilih tidur daripada nongkrong</strong><br>
+            • privilege hari ini: <strong>bebas makan enak tanpa ngitung kalori!</strong>
+        </div>
+
+        <button class="secret-button" onclick="showSecretEnding()">
+            lanjut ke bagian terakhir ➡️
+        </button>
+    </div>
+</section>
+
+<!-- bagian paling akhir (terpisah setelah sertifikat) -->
+<section id="secretEnding">
+    <div class="secret-content">
+        <div class="secret-label">secret ending unlocked</div>
+        <h1 class="secret-title">ketemu deh!</h1>
+
+        <p class="secret-text">
+            panjang umur, sehat-sehat terus, doa paling terbaik pokoknya buat kamu!
+            semoga semua wishlist sama goals kamu dipermudah jalannya yaa
+            <br><br>
+            aamiin paling kenceng!
+            <br><br>
+            jujur keberadaan kamu tuh ngaruh banget buat aku, makasih ya udah sering bantuin
+            dan selalu ada pas aku butuh.
+            real talk, thank you so much buat semua kebaikan kamu selama ini.
+            <br><br>
+            semangat terus ya ngejalanin harinya!
+            <br><br>
+            makasih udah bertahan sejauh ini, dan
+            aku bangga banget sama kamu fr fr.
+            <br><br>
+            <span style="color:#fff;">
+                once again, happy birthday! 🎂✨
+            </span>
+        </p>
+    </div>
+</section>
+
+<audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+function playBeep(freq, duration) {
+    try {
+        const ctx = new (window.audiocontext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+    } catch (e) {}
+}
+
+function triggerShake() {
+    document.body.classList.remove("shake-now");
+    void document.body.offsetWidth;
+    document.body.classList.add("shake-now");
+}
+
+let currentLevel = 1;
+let foundObjects = 0;
+let memoryCards = [];
+let flippedCards = [];
+let matchedPairs = 0;
+let wrongFlips = 0;
+let zonkClicks = 0;
+let roachClicks = 0;
+let skipDodges = 0;
+let blowProgress = 0;
+
+const loadingBar = document.getElementById("loadingBar");
+const loadingPercent = document.getElementById("loadingPercent");
+const loadingJoke = document.getElementById("loadingJoke");
+const intro = document.getElementById("intro");
+const game = document.getElementById("game");
+
+const loadingLines = [
+    "lagi ngitungin umur kamu yang nambah...",
+    "ngecek stok kesabaran kamu tahun ini...",
+    "nyiapin kue virtual biar hemat budget...",
+    "dikit lagi kelar, tahan napas..."
+];
+
+let loading = 0;
+const loadingInterval = setInterval(() => {
+    loading += Math.floor(Math.random() * 8) + 3;
+
+    if (loading < 30) loadingJoke.textContent = loadingLines[0];
+    else if (loading < 60) loadingJoke.textContent = loadingLines[1];
+    else if (loading < 90) loadingJoke.textContent = loadingLines[2];
+    else loadingJoke.textContent = loadingLines[3];
+
+    if (loading >= 100) {
+        loading = 100;
+        clearInterval(loadingInterval);
+        setTimeout(() => {
+            intro.style.display = "none";
+            game.style.display = "block";
+            startParticles();
+        }, 600);
+    }
+
+    loadingBar.style.width = loading + "%";
+    loadingPercent.textContent = loading + "%";
+}, 120);
+
+document.addEventListener("click", function startMusic() {
+    const music = document.getElementById("bgMusic");
+    music.volume = 0.35;
+    music.play().catch(() => {});
+    document.removeEventListener("click", startMusic);
+});
+
+const panicMessages = [
+    "ngapain pencet tombol darurat?! tenang, nggak ada bom kok, cuma ngingetin umur kamu nambah 1 tahun 💀",
+    "panik kahh?! minum air putih dulu biar nggak grogi main game ini 🥤",
+    "tombol darurat cuma pajangan kakk, lanjutin aja quest-nya wkwk",
+    "info penting: hari ini kalori kue ultah resmi nggak dihitung. gas makan enak! 🍰"
+];
+let panicIdx = 0;
+
+function panicJoke() {
+    playBeep(220, 0.2);
+    triggerShake();
+    showModal("🚨", panicMessages[panicIdx % panicMessages.length]);
+    panicIdx++;
+}
+
+const ramalanList = [
+    "ramalan tahun ini: kamu bakal makin suksess, dompet makin tebel, tapi tetep suka bingung mau makan apa 🍜",
+    "ramalan tahun ini: rezeki dateng dari arah nggak terduga, asal jangan lupa bangun pagi wkwk ☀️",
+    "ramalan tahun ini: bakal banyak ketawa dan dikelilingi orang-orang yang tulus sama kamu ✨",
+    "ramalan tahun ini: overthinking berkurang 80%, tidur nyenyak meningkat 200%! 😴"
+];
+let ramalIdx = 0;
+
+function ramalNasib() {
+    playBeep(520, 0.18);
+    showModal("🔮", ramalanList[ramalIdx % ramalList.length]);
+    ramalIdx++;
+}
+
+function goToLevel(level) {
+    document.querySelectorAll(".level").forEach(section => section.classList.remove("active"));
+    const target = document.getElementById("level" + level);
+    if (target) {
+        target.classList.add("active");
+        currentLevel = level;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+}
+
+function showModal(icon, text) {
+    document.getElementById("modalIcon").textContent = icon;
+    document.getElementById("modalText").textContent = text;
+    document.getElementById("modal").classList.add("show");
+}
+
+function closeModal() {
+    document.getElementById("modal").classList.remove("show");
+}
+
+function inspectZonk() {
+    playBeep(300, 0.15);
+    const catReplies = [
+        "meong! aku cuma kucing lewat, bukan clue. cari barang lain sana wkwk 🐈‍⬛",
+        "dibilangin bukan clue masih aja diklik! nggak masuk ke tas kamu ya 😜",
+        "kucingnya ngambek diganggu tidur siang, coba klik jendela atau jam aja!"
+    ];
+    showModal("🐈‍⬛", catReplies[zonkClicks % catReplies.length]);
+    zonkClicks++;
+}
+
+function inspectRoach() {
+    playBeep(160, 0.25);
+    triggerShake();
+    const roach = document.getElementById("roachToy");
+    roach.style.left = (15 + Math.floor(Math.random() * 65)) + "%";
+    roach.style.bottom = (22 + Math.floor(Math.random() * 35)) + "%";
+
+    const roachReplies = [
+        "deymmm kecoa terbang!! ngapain diklik woi, ini bukan clue, kaburrr!! 🪳💨",
+        "wkwk masih dikejar juga kecoanya?! fokus cari clue ultah kakk 😂",
+        "kecoanya capek lari-lari, dia cuma numpang ngadem di pojokan kamar."
+    ];
+    showModal("🪳", roachReplies[roachClicks % roachReplies.length]);
+    roachClicks++;
+}
+
+function inspectObject(object) {
+    playBeep(440, 0.15);
+
+    const messages = {
+        window: {
+            icon: "◐",
+            text: "di balik jendela ada tulisan kecil banget: 'coba liat lebih teliti deh (jangan ngelamun mulu).'"
+        },
+        clock: {
+            icon: "◷",
+            text: "jamnya mati pas di angka 12. fix bukan kebetulan sih ini, catet angka 12.12 buat nanti!"
+        },
+        book: {
+            icon: "□",
+            text: "padahal udah ditulis jangan dibuka, tetep aja dibuka wkwk. isinya quotes: 'core memories emang wajib disimpen sih.'"
+        },
+        plant: {
+            icon: "✦",
+            text: "di bawah pot ada potongan kode rahasia nyempil! untung bukan cacing tanah."
+        }
+    };
+
+    if (!document.getElementById(object).dataset.found) {
+        document.getElementById(object).dataset.found = "true";
+        foundObjects++;
+        updateInventory(foundObjects);
+    }
+
+    showModal(messages[object].icon, messages[object].text);
+
+    if (foundObjects >= 4) {
+        setTimeout(() => {
+            playBeep(660, 0.25);
+            showModal("✓", "gokil! semua barang udah dikepoin. jalan baru kebuka nih!");
+            setTimeout(() => {
+                closeModal();
+                setupMemoryGame();
+                goToLevel(2);
+            }, 1600);
+        }, 400);
+    }
+}
+
+function updateInventory(count) {
+    const items = ["item1", "item2", "item3", "item4"];
+    if (count > 0) {
+        const item = document.getElementById(items[count - 1]);
+        if (item) {
+            item.classList.add("active");
+            item.textContent = "✦";
+        }
+    }
+}
+
+function setupMemoryGame() {
+    const symbols = ["★", "★", "●", "●", "◆", "◆", "✦", "✦"];
+    memoryCards = symbols.sort(() => Math.random() - 0.5);
+    flippedCards = [];
+    matchedPairs = 0;
+    wrongFlips = 0;
+
+    const grid = document.getElementById("memoryGrid");
+    grid.innerHTML = "";
+
+    memoryCards.forEach((symbol, index) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.dataset.symbol = symbol;
+        card.dataset.index = index;
+        card.textContent = "?";
+        card.addEventListener("click", () => flipCard(card));
+        grid.appendChild(card);
+    });
+
+    updateMemoryStatus();
+}
+
+function flipCard(card) {
+    if (card.classList.contains("flipped") || card.classList.contains("matched") || flippedCards.length >= 2) {
+        return;
+    }
+    playBeep(380, 0.08);
+    card.classList.add("flipped");
+    card.textContent = card.dataset.symbol;
+    flippedCards.push(card);
+
+    if (flippedCards.length === 2) {
+        setTimeout(checkMatch, 600);
+    }
+}
+
+function checkMatch() {
+    const [first, second] = flippedCards;
+    const roastEl = document.getElementById("memoryRoast");
+
+    if (first.dataset.symbol === second.dataset.symbol) {
+        playBeep(580, 0.15);
+        first.classList.add("matched");
+        second.classList.add("matched");
+        matchedPairs++;
+        flippedCards = [];
+        roastEl.textContent = "cakep! belum pikun ternyata 😎";
+        updateMemoryStatus();
+
+        if (matchedPairs === 4) {
+            setTimeout(() => {
+                showModal("✓", "anjay kelar semua! ingatan kamu masih tajem ternyata.");
+                setTimeout(() => {
+                    closeModal();
+                    goToLevel(3);
+                }, 1300);
+            }, 300);
+        }
+    } else {
+        playBeep(200, 0.15);
+        wrongFlips++;
+        const roasts = [
+            "yah salah! baru nambah umur dikit masa udah lupa 😅",
+            "beda simbol woi, fokus fokus wkwk",
+            "tuh kan meleset lagi, minum aqua dulu gih 💧"
+        ];
+        roastEl.textContent = roasts[(wrongFlips - 1) % roasts.length];
+
+        setTimeout(() => {
+            first.classList.remove("flipped");
+            second.classList.remove("flipped");
+            first.textContent = "?";
+            second.textContent = "?";
+            flippedCards = [];
+        }, 500);
+    }
+}
+
+function updateMemoryStatus() {
+    document.getElementById("memoryStatus").textContent = matchedPairs + " / 4 kelar";
+}
+
+function checkRiddle() {
+    const input = document.getElementById("riddleAnswer").value.trim().toLowerCase();
+
+    if (input === "ulang tahun" || input === "ulangtahun" || input === "ultah" || input === "birthday") {
+        playBeep(620, 0.2);
+        showModal("✓", "bener banget! dikit lagi finish nih.");
+        setTimeout(() => {
+            closeModal();
+            goToLevel(4);
+        }, 1200);
+    } else if (input === "") {
+        triggerShake();
+        showModal("🙄", "diisi dulu dong kakk, masa ngecek angin kosong wkwk");
+    } else {
+        triggerShake();
+        showModal("?", "masih kurang tepat nih! clue: hari spesial kamu hari ini apa hayo?");
+    }
+}
+
+function runAwaySkip() {
+    playBeep(480, 0.08);
+    const btn = document.getElementById("skipPrankBtn");
+    const rx = Math.floor(Math.random() * 140) - 70;
+    const ry = Math.floor(Math.random() * 70) - 35;
+    btn.style.transform = `translate(${rx}px, ${ry}px)`;
+    skipDodges++;
+    if (skipDodges === 3) btn.textContent = "gabisa di-skip wkwk 😜";
+    else if (skipDodges >= 5) btn.textContent = "ketik 12.12 aja udah 😂";
+}
+
+function checkPassword() {
+    const password = document.getElementById("passwordInput").value.trim().toLowerCase();
+
+    if (password === "12.12") {
+        playBeep(700, 0.3);
+        showFinal(true);
+    } else if (password === "birthday" || password === "ultah") {
+        playBeep(700, 0.3);
+        showFinal(false);
+    } else {
+        triggerShake();
+        playBeep(180, 0.25);
+        showModal("kegembok", "passwordnya salah nih! clue-nya angka jam di stage 1 tadi (12.12) atau kata birthday.");
+    }
+}
+
+function blowCandle() {
+    if (blowProgress >= 100) return;
+
+    playBeep(320 + blowProgress * 3, 0.12);
+    blowProgress = Math.min(100, blowProgress + 25);
+    const bar = document.getElementById("blowBarFill");
+    const cake = document.getElementById("cakeEmoji");
+    const hint = document.getElementById("blowHint");
+    const btn = document.getElementById("blowCandleBtn");
+
+    bar.style.width = blowProgress + "%";
+    cake.style.transform = "scale(1.2) rotate(" + (Math.random() * 16 - 8) + "deg)";
+    setTimeout(() => { cake.style.transform = "scale(1)"; }, 100);
+
+    if (blowProgress < 100) {
+        hint.textContent = `kurang kenceng tiupannya! baru ${blowProgress}%, gas klik lagi!`;
+    } else {
+        cake.textContent = "🧁💨";
+        hint.textContent = "pfuuuh!! lilinnya mati! make a wish dulu dalam hati ✨";
+        btn.textContent = "lilin udah mati 🎉";
+        createConfetti();
+    }
+}
+
+function pickGift(num) {
+    playBeep(560, 0.18);
+    const giftRes = document.getElementById("giftResultText");
+    const prizes = {
+        1: "🎁 zonk berhadiah: voucher bebas overthinking seharian + kuota ketawa unlimited!",
+        2: "🎀 jackpot: doa biar rezeki kamu lancar jaya & bebas drama tahun ini!",
+        3: "📦 spesial: jatah tidur nyenyak tanpa mimpi buruk + sah jadi main character hari ini!"
+    };
+    giftRes.innerHTML = `<strong style="color:#fff;">${prizes[num]}</strong>`;
+    createConfetti();
+}
+
+function showFinal(secret) {
+    document.getElementById("final").style.display = "flex";
+    if (secret) {
+        document.querySelector(".final-message").innerHTML = `
+            <br><br>
+            hope u like it ya kakk! 🎉
+        `;
+    }
+    createConfetti();
+}
+
+function showCertScreen() {
+    playBeep(580, 0.2);
+    document.getElementById("certScreen").style.display = "flex";
+    createConfetti();
+}
+
+function showSecretEnding() {
+    playBeep(650, 0.25);
+    document.getElementById("certScreen").style.display = "none";
+    document.getElementById("secretEnding").style.display = "flex";
+    createConfetti();
+}
+
+function startParticles() {
+    setInterval(() => {
+        if (Math.random() < 0.6) createParticle();
+    }, 900);
+}
+
+function createParticle() {
+    const particle = document.createElement("div");
+    particle.className = "particle";
+    particle.style.left = Math.random() * 100 + "vw";
+    particle.style.top = (Math.random() * 100 + 100) + "vh";
+    particle.style.animationDuration = (5 + Math.random() * 7) + "s";
+    document.body.appendChild(particle);
+    setTimeout(() => particle.remove(), 12000);
+}
+
+function createConfetti() {
+    for (let i = 0; i < 80; i++) {
+        const piece = document.createElement("div");
+        piece.style.position = "fixed";
+        piece.style.left = Math.random() * 100 + "vw";
+        piece.style.top = "-10px";
+        piece.style.width = "4px";
+        piece.style.height = "12px";
+        piece.style.background = "#fff";
+        piece.style.opacity = Math.random();
+        piece.style.zIndex = "10000";
+
+        const duration = 2 + Math.random() * 4;
+        piece.animate([
+            { transform: "translatey(0) rotate(0deg)", opacity: 1 },
+            { transform: `translatey(110vh) rotate(${Math.random() * 900}deg)`, opacity: 0 }
+        ], {
+            duration: duration * 1000,
+            easing: "cubic-bezier(.2,.7,.3,1)"
+        });
+
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), duration * 1000);
+    }
+}
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        const riddle = document.getElementById("riddleAnswer");
+        const password = document.getElementById("passwordInput");
+        if (document.activeElement === riddle) checkRiddle();
+        if (document.activeElement === password) checkPassword();
+    }
+});
+
+document.getElementById("modal").addEventListener("click", function(event) {
+    if (event.target === this) closeModal();
+});
+</script>
+
+</body>
+</html>
+
